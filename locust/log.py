@@ -29,8 +29,16 @@ class StdErrWrapper(object):
     """
     Wrapper for stderr
     """
+    def __init__(self, filename="locust.log"):
+        self.terminal = stderr_logger
+        self.log = open(filename, "a")
+
+    def __getattr__(self, attr):
+        return getattr(self.terminal, attr)
+
     def write(self, s):
-        stderr_logger.error(s.strip())
+        self.terminal.error(s.strip())
+        self.log.write(s.strip())
 
 # set up logger for the statistics tables
 console_logger = logging.getLogger("console_logger")
